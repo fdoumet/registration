@@ -48,7 +48,7 @@ if ( \OCP\Util::getVersion()[0] >= 12 )
 				<input class="registration-checkbox" type="checkbox" id="privacy" name="terms">
 				I have read the Privacy Policy
 			</label>
-		</p>
+		</p><br>
 
 		<input type="submit" id="submit" value="<?php p($l->t('Create account')); ?>" />
 	</fieldset>
