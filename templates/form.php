@@ -36,6 +36,20 @@ if ( \OCP\Util::getVersion()[0] >= 12 )
 			<input id="show" name="show" type="checkbox">
 			<label id="show-password" style="display: inline;" for="show"></label>
 		</p>
+
+		<p>
+			<label for="terms">
+				<input class="registration-checkbox" type="checkbox" id="terms" name="terms">
+				I agree to the Terms and Conditions
+			</label><br/>
+		</p>
+		<p>
+			<label for="privacy">
+				<input class="registration-checkbox" type="checkbox" id="privacy" name="terms">
+				I have read the Privacy Policy
+			</label>
+		</p>
+
 		<input type="submit" id="submit" value="<?php p($l->t('Create account')); ?>" />
 	</fieldset>
 </form>
