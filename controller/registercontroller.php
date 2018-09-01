@@ -164,7 +164,7 @@ class RegisterController extends Controller {
 			return new TemplateResponse(
 				'registration',
 				'message',
-				array('msg' => $this->l10n->t("Your account has been successfully created, but it still needs approval from an administrator.")),
+				array('msg' => "You're awesome! Welcome to your PixelDrive account.\r\n\r\nDue to demand, and to keep our service great, we're slowly rolling out new registrations. We'll approve your account within 24 hours and send you an email.\r\n\r\nAs an early adopter, you're gonna see something pretty cool in our platform.\r\n\r\nHold tight!"),
 				'guest');
 		}
 	}
