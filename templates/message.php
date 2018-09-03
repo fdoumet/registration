@@ -4,5 +4,5 @@ if ( \OCP\Util::getVersion()[0] >= 12 )
         \OCP\Util::addStyle('core', 'guest')
 ?>
 <ul class="msg error-wide">
-	<li><strong><?php print_unescaped(nl2br($_['msg']))?></strong></li>
+	<li><?php print_unescaped(nl2br($_['msg']))?></li>
 </ul>
