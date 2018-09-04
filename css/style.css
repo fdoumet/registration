@@ -33,4 +33,5 @@ input[type="submit"] {
 
 .registration-checkbox {
 	-webkit-appearance: checkbox !important;
+	vertical-align: middle;
 }

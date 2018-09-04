@@ -37,13 +37,13 @@ if ( \OCP\Util::getVersion()[0] >= 12 )
 			<label id="show-password" style="display: inline;" for="show"></label>
 		</p>
 
-		<p>
+		<p style="color:white">
 			<label for="terms">
 				<input class="registration-checkbox" type="checkbox" id="terms" name="terms">
 				I agree to the Terms and Conditions
 			</label><br/>
 		</p>
-		<p>
+		<p style="color:white">
 			<label for="privacy">
 				<input class="registration-checkbox" type="checkbox" id="privacy" name="terms">
 				I have read the Privacy Policy
