@@ -16,6 +16,7 @@ use OCA\Registration\Db\Registration;
 use OCA\Registration\Service\MailService;
 use OCA\Registration\Service\RegistrationException;
 use OCA\Registration\Service\RegistrationService;
+use OCP\AppFramework\Db\DoesNotExistException;
 use \OCP\IRequest;
 use \OCP\AppFramework\Http\TemplateResponse;
 use \OCP\AppFramework\Http\RedirectResponse;
@@ -141,7 +142,16 @@ class RegisterController extends Controller {
 	public function createAccount($token) {
 		$username = $this->request->getParam('username');
 		$password = $this->request->getParam('password');
-		$registration = $this->registrationService->getRegistrationForToken($token);
+		try{
+			$registration = $this->registrationService->getRegistrationForToken($token);
+		} catch (DoesNotExistException $exception){
+			// warn the user their account needs admin validation
+			return new TemplateResponse(
+				'registration',
+				'message',
+				array('msg' => "You're awesome! Welcome to your PixelDrive account.\r\n\r\nDue to demand, and to keep our service great, we're slowly rolling out new registrations. We'll approve your account within 24 hours and send you an email.\r\n\r\nAs an early adopter, you're gonna see something pretty cool in our platform.\r\n\r\nHold tight!"),
+				'guest');
+		}
 
 		try {
 			$user = $this->registrationService->createAccount($registration, $username, $password);
