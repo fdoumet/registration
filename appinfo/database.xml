@@ -80,6 +80,11 @@
 				<notnull>true</notnull>
 			</field>
 			<field>
+				<name>hash</name>
+				<type>text</type>
+				<notnull>true</notnull>
+			</field>
+			<field>
 				<name>date_created</name>
 				<type>timestamp</type>
 				<notnull>true</notnull>

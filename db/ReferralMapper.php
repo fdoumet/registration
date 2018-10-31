@@ -61,6 +61,27 @@ class ReferralMapper extends QBMapper {
 		}
 	}
 
+	public function findByHash($hash) {
+		try{
+			$query = $this->db->getQueryBuilder();
+			$query->select('*')->from($this->externalShareTable)
+				->where($query->expr()->eq('hash', $query->createNamedParameter($hash, IQueryBuilder::PARAM_STR)));
+			return $this->findEntity($query);
+		} catch (DoesNotExistException $e) {
+			\OC::$server->getLogger()->logException($e, [
+				'message' => $e->getMessage(),
+				'level' => ILogger::ERROR,
+				'app' => 'registration',
+			]);
+		} catch (MultipleObjectsReturnedException $e) {
+			\OC::$server->getLogger()->logException($e, [
+				'message' => $e->getMessage(),
+				'level' => ILogger::ERROR,
+				'app' => 'registration',
+			]);
+		}
+	}
+
 	public function findAll(): array {
 		try{
 			$query = $this->db->getQueryBuilder();
@@ -87,6 +108,7 @@ class ReferralMapper extends QBMapper {
 	 */
 	public function insert(Entity $entity): Entity {
 		$entity->setDateCreated(date('Y-m-d H:i:s'));
+		$entity->setHash(md5($entity->getReferrer() . ':' . $entity->getReferreeEmail() . ':' . $entity->getDateCreated()));
 		return parent::insert($entity);
 	}
 }
