@@ -18,7 +18,8 @@ return [
 		['name' => 'register#askEmail', 'url' => '/', 'verb' => 'GET'],
 		['name' => 'register#validateEmail', 'url' => '/', 'verb' => 'POST'],
 		['name' => 'register#verifyToken', 'url' => '/verify/{token}', 'verb' => 'GET'],
-		['name' => 'register#createAccount', 'url' => '/verify/{token}', 'verb' => 'POST']
+		['name' => 'register#createAccount', 'url' => '/verify/{token}', 'verb' => 'POST'],
+		['name' => 'referrals#newReferral', 'url' => '/referral', 'verb' => 'POST']
 	],
 	'ocs' => [
 		['root' => '/registration', 'name' => 'api#validate', 'url' => '/v1/validate', 'verb' => 'POST'],
