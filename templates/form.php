@@ -24,8 +24,8 @@ if ( \OCP\Util::getVersion()[0] >= 12 )
 		</p>
 
 		<p class="groupmiddle">
-			<input type="text" name="displayname" id="displayname" placeholder="<?php p($l->t('Display name')); ?>" />
-			<label for="displayname" class="infield"><?php p($l->t('Display name')); ?></label>
+			<input type="text" name="displayname" id="displayname" placeholder="<?php p($l->t('Full name')); ?>" />
+			<label for="displayname" class="infield"><?php p($l->t('Full name')); ?></label>
 			<img id="username-icon" class="svg" src="<?php print_unescaped(image_path('', 'actions/user.svg')); ?>" alt=""/>
 		</p>
 
