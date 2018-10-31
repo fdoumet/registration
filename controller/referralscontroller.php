@@ -128,6 +128,7 @@ class ReferralsController extends Controller {
 
 		try {
 			$user = $this->registrationService->createAccount($registration, $username, $password);
+			$user->setDisplayName($displayName);
 		} catch (\Exception $exception) {
 			// Render form with previously sent values
 			return new TemplateResponse('registration', 'form',
