@@ -82,6 +82,27 @@ class ReferralMapper extends QBMapper {
 		}
 	}
 
+	public function  findByEmail($email) {
+		try{
+			$query = $this->db->getQueryBuilder();
+			$query->select('*')->from($this->externalShareTable)
+				->where($query->expr()->eq('referree_email', $query->createNamedParameter($email, IQueryBuilder::PARAM_STR)));
+			return $this->findEntities($query);
+		} catch (DoesNotExistException $e) {
+			\OC::$server->getLogger()->logException($e, [
+				'message' => $e->getMessage(),
+				'level' => ILogger::ERROR,
+				'app' => 'registration',
+			]);
+		} catch (MultipleObjectsReturnedException $e) {
+			\OC::$server->getLogger()->logException($e, [
+				'message' => $e->getMessage(),
+				'level' => ILogger::ERROR,
+				'app' => 'registration',
+			]);
+		}
+	}
+
 	public function findAll(): array {
 		try{
 			$query = $this->db->getQueryBuilder();

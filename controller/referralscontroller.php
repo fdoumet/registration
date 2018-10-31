@@ -5,12 +5,16 @@ namespace OCA\Registration\Controller;
 
 use OCA\Registration\Service\MailService;
 use OCA\Registration\Service\ReferralsService;
+use OCA\Registration\Service\RegistrationException;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
+use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IL10N;
+use OCP\ILogger;
 use OCP\IRequest;
 use OCP\IURLGenerator;
+use OCP\IUserManager;
 
 class ReferralsController extends Controller {
 	/** @var IL10N */
@@ -23,6 +27,10 @@ class ReferralsController extends Controller {
 	private $mailService;
 	/** @var String */
 	private $userId;
+	/** @var IUserManager */
+	private $userManager;
+	/** @var ILogger */
+	private $logger;
 
 
 	public function __construct(
@@ -32,6 +40,8 @@ class ReferralsController extends Controller {
 		IURLGenerator $urlgenerator,
 		ReferralsService $referralsService,
 		MailService $mailService,
+		IUserManager $userManager,
+		ILogger $logger,
 		$UserId
 	){
 		parent::__construct($appName, $request);
@@ -40,6 +50,8 @@ class ReferralsController extends Controller {
 		$this->referralsService = $referralsService;
 		$this->mailService = $mailService;
 		$this->userId = $UserId;
+		$this->userManager = $userManager;
+		$this->logger = $logger;
 	}
 
 	/**
@@ -50,8 +62,36 @@ class ReferralsController extends Controller {
 	 */
 	public function newReferral() {
 		$email = $this->request->getParam('email');
-		$this->referralsService->insertOrUpdate($this->userId, $email, 0);
+
+		$existingUsers = $this->userManager->getByEmail($email);
+		if (!empty($existingUsers)) {
+			$this->logger->error('Referral not sent, user already exists.');
+			return;
+		}
+		
+		$invitedUsers = $this->referralsService->findByEmail($email);
+		if (!empty($invitedUsers)) {
+			$this->logger->error('Referral not sent, user already invited.');
+			return;
+		}
+
+		$referral = $this->referralsService->insertOrUpdate($this->userId, $email, 0);
+
+		try {
+			$this->mailService->sendReferralByMail($referral);
+		} catch (RegistrationException $e) {
+			return $this->renderError($e->getMessage(), $e->getHint());
+		}
 
 		return new DataResponse("", Http::STATUS_OK);
+	}
+
+	private function renderError($error, $hint="") {
+		return new TemplateResponse('', 'error', array(
+			'errors' => array(array(
+				'error' => $error,
+				'hint' => $hint
+			))
+		), 'error');
 	}
 }

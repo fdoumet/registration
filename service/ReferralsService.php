@@ -26,6 +26,14 @@ class ReferralsService {
 		}
 	}
 
+	public function findByEmail($email) {
+		try {
+			return $this->mapper->findByEmail($email);
+		} catch(Exception $e) {
+			$this->handleException($e);
+		}
+	}
+
 	public function find($username, $referree_email) {
 		try {
 			return $this->mapper->find($username, $referree_email);
