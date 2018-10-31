@@ -67,7 +67,7 @@ class ReferralsService {
 		}
 	}
 
-	private function insert($referrer, $referree_email, $status) {
+	public function insert($referrer, $referree_email, $status) {
 		$r = new Referral();
 		$r->setReferrer($referrer);
 		$r->setReferreeEmail($referree_email);
@@ -75,9 +75,9 @@ class ReferralsService {
 		return $this->mapper->insert($r);
 	}
 
-	public function update($referrer, $referree_email, $status) {
+	public function update($hash, $status) {
 		try {
-			$referral = $this->mapper->find($referrer, $referree_email);
+			$referral = $this->mapper->findByHash($hash);
 			$referral->setStatus($status);
 			return $this->mapper->update($referral);
 		} catch(Exception $e) {
@@ -86,9 +86,9 @@ class ReferralsService {
 	}
 
 	public function insertOrUpdate($referrer, $referree_email, $status){
-		$p = $this->mapper->find($referrer, $referree_email);
-		if (isset($p))
-			return $this->update($referrer, $referree_email, $status);
+		$r = $this->mapper->find($referrer, $referree_email);
+		if (isset($r))
+			return $this->update($r->getHash(), $status);
 		return $this->insert($referrer, $referree_email, $status);
 	}
 

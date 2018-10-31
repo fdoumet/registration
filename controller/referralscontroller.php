@@ -68,21 +68,18 @@ class ReferralsController extends Controller {
 	 */
 	public function newReferral() {
 		$email = $this->request->getParam('email');
+		$validReferral = $this->isValidReferral($email);
 
-		$existingUsers = $this->userManager->getByEmail($email);
-		if (!empty($existingUsers)) {
-			$this->logger->error('Referral not sent, user already exists.');
-			return;
-		}
-		
-		$invitedUsers = $this->referralsService->findByEmail($email);
-		if (!empty($invitedUsers)) {
-			$this->logger->error('Referral not sent, user already invited.');
+		// Make sure we don't duplicated referrals
+		if (!$validReferral){
+			$this->logger->error('Referral not sent. Referral already exists.');
 			return;
 		}
 
-		$referral = $this->referralsService->insertOrUpdate($this->userId, $email, 0);
+		// Insert this referral in the database
+		$referral = $this->referralsService->insert($this->userId, $email, 0);
 
+		// Notify referree
 		try {
 			$this->mailService->sendReferralByMail($referral);
 		} catch (RegistrationException $e) {
@@ -90,6 +87,24 @@ class ReferralsController extends Controller {
 		}
 
 		return new DataResponse("", Http::STATUS_OK);
+	}
+
+	private function doesUserExist($email){
+		// Check if user already exists
+		$existingUsers = $this->userManager->getByEmail($email);
+		return !empty($existingUsers);
+	}
+
+	private function isValidReferral($email){
+		// Check if user already exists
+		if ($this->doesUserExist($email))
+			return false;
+
+		$invitedUser = $this->referralsService->findByEmail($email);
+		if (isset($invitedUser) && $invitedUser->getStatus() == Referral::REFERRAL_SENT)
+			return false;
+
+		return true;
 	}
 
 	/**
@@ -100,9 +115,15 @@ class ReferralsController extends Controller {
 	 * @return TemplateResponse
 	 */
 	public function followReferral($hash) {
+		$referral = $this->referralsService->findByHash($hash);
+		$userExists = $this->doesUserExist($referral->getReferreeEmail()) || $referral->getStatus() == Referral::REFERRAL_COMPLETE;
+
+		// If user already exists (likely because this referral link has already been acted upon), notify the user with a message
+		if ($userExists)
+			return new TemplateResponse('registration', 'message', array('msg' => "User already exists, or referral link has already been used"), 'guest');
+
 		try {
 			/** @var Referral $referral */
-			$referral = $this->referralsService->findByHash($hash);
 			return new TemplateResponse('registration', 'form', ['email' => $referral->getReferreeEmail(), 'token' => $hash], 'guest');
 		} catch (RegistrationException $exception) {
 			return $this->renderError($exception->getMessage(), $exception->getHint());
@@ -139,6 +160,9 @@ class ReferralsController extends Controller {
 					'token' => $hash
 				], 'guest');
 		}
+
+		// UPDATE referral
+		$this->referralsService->update($hash, Referral::REFERRAL_COMPLETE);
 
 		if ($user->isEnabled()) {
 			// log the user

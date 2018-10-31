@@ -87,7 +87,7 @@ class ReferralMapper extends QBMapper {
 			$query = $this->db->getQueryBuilder();
 			$query->select('*')->from($this->externalShareTable)
 				->where($query->expr()->eq('referree_email', $query->createNamedParameter($email, IQueryBuilder::PARAM_STR)));
-			return $this->findEntities($query);
+			return $this->findEntity($query);
 		} catch (DoesNotExistException $e) {
 			\OC::$server->getLogger()->logException($e, [
 				'message' => $e->getMessage(),
