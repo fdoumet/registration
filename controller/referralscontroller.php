@@ -120,9 +120,11 @@ class ReferralsController extends Controller {
 		$referral = $this->referralsService->findByHash($hash);
 		$username = $this->request->getParam('username');
 		$password = $this->request->getParam('password');
+		$displayName = $this->request->getParam('displayname');
 
 		$registration = new Registration();
 		$registration->setEmail($referral->getReferreeEmail());
+		$registration->setDisplayname($displayName);
 
 		try {
 			$user = $this->registrationService->createAccount($registration, $username, $password);
