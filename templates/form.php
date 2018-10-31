@@ -3,7 +3,7 @@
 \OCP\Util::addScript('registration', 'form');
 if ( \OCP\Util::getVersion()[0] >= 12 )
 	\OCP\Util::addStyle('core', 'guest');
-?><form action="<?php print_unescaped(\OC::$server->getURLGenerator()->linkToRoute('registration.register.createAccount', array('token'=>$_['token']))) ?>" method="post">
+?><form action="<?php print_unescaped(\OC::$server->getURLGenerator()->getBaseUrl() . $_SERVER['REQUEST_URI']) ?>" method="post">
 	<input type="hidden" name="requesttoken" value="<?php p($_['requesttoken']) ?>" />
 	<fieldset>
 		<?php if ( !empty($_['errormsgs']) ) {?>

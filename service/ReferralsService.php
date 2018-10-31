@@ -34,6 +34,14 @@ class ReferralsService {
 		}
 	}
 
+	public function findByHash($hash) {
+		try {
+			return $this->mapper->findByHash($hash);
+		} catch(Exception $e) {
+			$this->handleException($e);
+		}
+	}
+
 	public function find($username, $referree_email) {
 		try {
 			return $this->mapper->find($username, $referree_email);
@@ -84,14 +92,13 @@ class ReferralsService {
 		return $this->insert($referrer, $referree_email, $status);
 	}
 
-	public function delete($plan) {
+	public function delete($hash) {
 		try {
-			$p = $this->mapper->find($plan);
+			$p = $this->mapper->findByHash($hash);
 			$this->mapper->delete($p);
 			return $p;
 		} catch(Exception $e) {
 			$this->handleException($e);
 		}
 	}
-
 }
