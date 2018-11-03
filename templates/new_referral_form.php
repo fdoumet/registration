@@ -47,7 +47,7 @@
 		<?php foreach ($_['referrals'] as $referral) { ?>
 			<tr>
 				<td><?php p($referral->getReferreeEmail()) ?></td>
-				<td><?php ($referral->getStatus() === 0) ? p('Pending') : p('Complete')?></td>
+				<td><?php ($referral->getStatus() == 0) ? p('Pending') : p('Complete')?></td>
 			</tr>
 		<?php } ?>
 	</table>
