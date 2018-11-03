@@ -5,6 +5,14 @@
 <style>
 	table, th, td {
 		border: 1px solid black;
+
+	}
+	th, td {
+		padding: 15px;
+		text-align: left;
+	}
+	th {
+		font-weight: bold;
 	}
 </style>
 
