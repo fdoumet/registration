@@ -1,6 +1,12 @@
 <?php
-script('registration', 'refer_friend');
+	script('registration', 'refer_friend');
 ?>
+
+<style>
+	table, th, td {
+		border: 1px solid black;
+	}
+</style>
 
 <div id="security-password" class="section">
 	<h2 class="inlineblock"><?php p($l->t('Refer a friend'));?></h2>
@@ -19,15 +25,11 @@ script('registration', 'refer_friend');
 		</form>
 	</div>
 	<span class="msg"></span>
+	<br><br>
+	<button id="toggleReferrerStatus">View Referral Status</button>
 </div>
 
-<style>
-	table, th, td {
-		border: 1px solid black;
-	}
-</style>
-
-<div id="referral-status" class="section">
+<div id="referral-status" class="section" style="display: none">
 	<h2 class="inlineblock"><?php p($l->t('Status'));?></h2><br>
 	<table>
 		<tr>

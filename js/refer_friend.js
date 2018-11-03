@@ -67,4 +67,15 @@ $(document).ready(function () {
 			return false;
 		}
 	});
+
+	$("#toggleReferrerStatus").click(function () {
+		let x = document.getElementById("referral-status");
+		if (x.style.display === "none") {
+			x.style.display = "block";
+			this.textContent = 'Hide Referral Status'
+		} else {
+			x.style.display = "none";
+			this.textContent = 'View Referral Status'
+		}
+	});
 });
