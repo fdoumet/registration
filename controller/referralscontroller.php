@@ -72,8 +72,9 @@ class ReferralsController extends Controller {
 
 		// Make sure we don't duplicated referrals
 		if (!$validReferral){
-			$this->logger->error('Referral not sent. Referral already exists.');
-			return;
+			$error = 'Referral not sent. Referral already exists';
+			$this->logger->error($error);
+			return new DataResponse(['status' => 'failure', 'data' => $error], Http::STATUS_OK);
 		}
 
 		// Insert this referral in the database
@@ -86,7 +87,8 @@ class ReferralsController extends Controller {
 			return $this->renderError($e->getMessage(), $e->getHint());
 		}
 
-		return new DataResponse("", Http::STATUS_OK);
+		// Result
+		return new DataResponse(['status' => 'success', 'data' => 'Referral Sent'], Http::STATUS_OK);
 	}
 
 	private function doesUserExist($email){
