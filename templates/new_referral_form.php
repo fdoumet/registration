@@ -20,3 +20,25 @@ script('registration', 'refer_friend');
 	</div>
 	<span class="msg"></span>
 </div>
+
+<style>
+	table, th, td {
+		border: 1px solid black;
+	}
+</style>
+
+<div id="referral-status" class="section">
+	<h2 class="inlineblock"><?php p($l->t('Status'));?></h2><br>
+	<table>
+		<tr>
+			<th>Email</th>
+			<th>Status</th>
+		</tr>
+		<?php foreach ($_['referrals'] as $referral) { ?>
+			<tr>
+				<td><?php p($referral->getReferreeEmail()) ?></td>
+				<td><?php ($referral->getStatus() === 0) ? p('Pending') : p('Complete')?></td>
+			</tr>
+		<?php } ?>
+	</table>
+</div>

@@ -43,9 +43,9 @@ class ReferralMapper extends QBMapper {
 	public function findAllForUser($username) {
 		try{
 			$query = $this->db->getQueryBuilder();
-			$query->select('*')->from($this->externalShareTable)
+			$query->select(['referree_email', 'status'])->from($this->externalShareTable)
 				->where($query->expr()->eq('referrer', $query->createNamedParameter($username, IQueryBuilder::PARAM_STR)));
-			return $this->findEntity($query);
+			return $this->findEntities($query);
 		} catch (DoesNotExistException $e) {
 			\OC::$server->getLogger()->logException($e, [
 				'message' => $e->getMessage(),
