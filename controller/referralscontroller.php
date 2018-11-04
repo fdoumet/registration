@@ -169,7 +169,7 @@ class ReferralsController extends Controller {
 
 		if ($user->isEnabled()) {
 			// log the user in
-			return $this->registrationService->loginUser($user->getUID(), $username, $password, false);
+			return $this->registrationService->loginUser($user->getUID(), $username, $password, false, $hash);
 		} else {
 			// warn the user their account needs admin validation
 			return new TemplateResponse(
