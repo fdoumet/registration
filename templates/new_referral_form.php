@@ -18,7 +18,7 @@
 
 <div id="security-password" class="section">
 	<h2 class="inlineblock"><?php p($l->t('Refer a friend'));?></h2>
-	<span id="refer-error-msg" class="msg success hidden">Saved</span>
+	<span id="refer-error-msg" class="msg success hidden">Sent</span>
 	<div class="personal-settings-setting-box">
 		<form id="passwordform">
 			<div class="personal-show-container">

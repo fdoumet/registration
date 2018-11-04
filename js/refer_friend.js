@@ -39,15 +39,13 @@ $(document).ready(function () {
 					removeloader();
 					$('#email').val('').change();
 				}
-				if (!data.data.includes('not sent')) {
+				if (!data.data.message.includes('not sent')) {
 					OC.msg.finishedSaving('#refer-error-msg', data);
 				} else {
 					OC.msg.finishedSaving('#refer-error-msg',
 						{
 							'status' : 'error',
-							'data' : {
-								'message' : t('settings', data.data)
-							}
+							'data' : data.data
 						}
 					);
 				}

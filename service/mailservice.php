@@ -40,6 +40,8 @@ use OCP\Util;
 
 class MailService {
 
+	/** @var Defaults */
+	protected $themingDefaults;
 	/** @var IURLGenerator */
 	private $urlGenerator;
 	/** @var IMailer */
@@ -57,7 +59,8 @@ class MailService {
 	/** @var IUserManager */
 	private $userManager;
 
-	public function __construct(IURLGenerator $urlGenerator, IMailer $mailer, Defaults $defaults, IL10N $l10n, IConfig $config, IGroupManager $groupManager, ILogger $logger, IUserManager $userManager) {
+	public function __construct(Defaults $themingDefaults, IURLGenerator $urlGenerator, IMailer $mailer, Defaults $defaults, IL10N $l10n, IConfig $config, IGroupManager $groupManager, ILogger $logger, IUserManager $userManager) {
+		$this->themingDefaults = $themingDefaults;
 		$this->urlGenerator = $urlGenerator;
 		$this->mailer = $mailer;
 		$this->defaults = $defaults;
@@ -117,11 +120,16 @@ class MailService {
 	public function sendReferralByMail(Referral $referral) {
 		$link = $this->urlGenerator->linkToRoute('registration.referrals.followReferral', array('hash' => $referral->getHash()));
 		$link = $this->urlGenerator->getAbsoluteURL($link);
+
+		$referringUser = $this->userManager->get($referral->getReferrer());
 		$template_var = [
 			'link' => $link,
-			'sitename' => $this->defaults->getName()
+			'sitename' => $this->defaults->getName(),
+			'referrer' => $referringUser->getDisplayName(),
+			'referrer_email' => $referringUser->getEMailAddress(),
+			'logo' => $this->urlGenerator->getAbsoluteURL($this->themingDefaults->getLogo(false))
 		];
-		$referringUser = $this->userManager->get($referral->getReferrer());
+
 		$html_template = new TemplateResponse('registration', 'email.referral_html', $template_var, 'blank');
 		$html_part = $html_template->render();
 		$plaintext_template = new TemplateResponse('registration', 'email.referral_plaintext', $template_var, 'blank');
