@@ -39,16 +39,20 @@
 
 <div id="referral-status" class="section" style="display: none">
 	<h2 class="inlineblock"><?php p($l->t('Status'));?></h2><br>
-	<table>
-		<tr>
-			<th>Email</th>
-			<th>Status</th>
-		</tr>
-		<?php foreach ($_['referrals'] as $referral) { ?>
+	<?php if (!empty($_['referrals'])){ ?>
+		<table>
 			<tr>
-				<td><?php p($referral->getReferreeEmail()) ?></td>
-				<td><?php ($referral->getStatus() == 0) ? p('Pending') : p('Complete')?></td>
+				<th>Email</th>
+				<th>Status</th>
 			</tr>
-		<?php } ?>
-	</table>
+			<?php foreach ($_['referrals'] as $referral) { ?>
+				<tr>
+					<td><?php p($referral->getReferreeEmail()) ?></td>
+					<td><?php ($referral->getStatus() == 0) ? p('Pending') : p('Complete')?></td>
+				</tr>
+			<?php } ?>
+		</table>
+	<?php } else { ?>
+		<span>No referrals found</span>
+	<?php } ?>
 </div>
