@@ -150,6 +150,7 @@ class ReferralsController extends Controller {
 		$registration->setDisplayname($displayName);
 
 		try {
+			$this->registrationService->validateDisplayname($displayName);
 			$user = $this->registrationService->createAccount($registration, $username, $password);
 			$user->setDisplayName($displayName);
 		} catch (\Exception $exception) {
@@ -167,7 +168,7 @@ class ReferralsController extends Controller {
 		$this->referralsService->update($hash, Referral::REFERRAL_COMPLETE);
 
 		if ($user->isEnabled()) {
-			// log the user
+			// log the user in
 			return $this->registrationService->loginUser($user->getUID(), $username, $password, false);
 		} else {
 			// warn the user their account needs admin validation

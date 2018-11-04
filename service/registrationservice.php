@@ -183,7 +183,7 @@ class RegistrationService {
 	 */
 	public function validateDisplayname($displayname) {
 		if($displayname === "") {
-			throw new RegistrationException($this->l10n->t('Please provide a valid display name.'));
+			throw new RegistrationException($this->l10n->t('Please provide a valid full name.'));
 		}
 	}
 

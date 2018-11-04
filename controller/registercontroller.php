@@ -156,6 +156,7 @@ class RegisterController extends Controller {
 		}
 
 		try {
+			$this->registrationService->validateDisplayname($displayName);
 			$user = $this->registrationService->createAccount($registration, $username, $password);
 			$user->setDisplayName($displayName);
 		} catch (\Exception $exception) {
