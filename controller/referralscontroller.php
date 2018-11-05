@@ -2,6 +2,8 @@
 
 namespace OCA\Registration\Controller;
 
+require_once __DIR__ . '/../service/ReferralsService.php';
+
 use OCA\Registration\Db\Referral;
 use OCA\Registration\Db\Registration;
 use OCA\Registration\Service\MailService;
