@@ -41,9 +41,16 @@ $(document).ready(function () {
 				}
 				if (!data.data.message.includes('not sent')) {
 					OC.msg.finishedSaving('#refer-error-msg', data);
+
 					// Append new row to table
 					let markup = "<tr> <td>" + email + "</td> <td>Pending</td></tr>";
-					$("table tbody").append(markup);
+					if (!$("table tbody").exists()){
+						$("#no-referrals-msg").remove();
+						let table = "<table><thead><tr><th>Email</th><th>Status</th></tr></thead><tbody>" + markup + "</tbody></table>";
+						$("#referral-status").append(table);
+					}
+					else
+						$("table tbody").append(markup);
 				} else {
 					OC.msg.finishedSaving('#refer-error-msg',
 						{

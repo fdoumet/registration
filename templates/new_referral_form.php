@@ -57,6 +57,6 @@
 			</tbody>
 		</table>
 	<?php } else { ?>
-		<span>No referrals found</span>
+		<span id="no-referrals-msg">No referrals found</span>
 	<?php } ?>
 </div>
