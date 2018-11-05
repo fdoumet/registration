@@ -127,7 +127,7 @@ class MailService {
 			'sitename' => $this->defaults->getName(),
 			'referrer' => $referringUser->getDisplayName(),
 			'referrer_email' => $referringUser->getEMailAddress(),
-			'logo' => $this->urlGenerator->getAbsoluteURL($this->themingDefaults->getLogo(false)),
+			'logo' => $this->urlGenerator->getAbsoluteURL($this->urlGenerator->imagePath('core','favicon-touch.png')),
 			'color' => $this->themingDefaults->getColorPrimary()
 		];
 
