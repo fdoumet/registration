@@ -41,16 +41,20 @@
 	<h2 class="inlineblock"><?php p($l->t('Status'));?></h2><br>
 	<?php if (!empty($_['referrals'])){ ?>
 		<table>
-			<tr>
-				<th>Email</th>
-				<th>Status</th>
-			</tr>
-			<?php foreach ($_['referrals'] as $referral) { ?>
+			<thead>
 				<tr>
-					<td><?php p($referral->getReferreeEmail()) ?></td>
-					<td><?php ($referral->getStatus() == 0) ? p('Pending') : p('Complete')?></td>
+					<th>Email</th>
+					<th>Status</th>
 				</tr>
-			<?php } ?>
+			</thead>
+			<tbody>
+				<?php foreach ($_['referrals'] as $referral) { ?>
+					<tr>
+						<td><?php p($referral->getReferreeEmail()) ?></td>
+						<td><?php ($referral->getStatus() == 0) ? p('Pending') : p('Complete')?></td>
+					</tr>
+				<?php } ?>
+			</tbody>
 		</table>
 	<?php } else { ?>
 		<span>No referrals found</span>

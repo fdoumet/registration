@@ -41,6 +41,9 @@ $(document).ready(function () {
 				}
 				if (!data.data.message.includes('not sent')) {
 					OC.msg.finishedSaving('#refer-error-msg', data);
+					// Append new row to table
+					let markup = "<tr> <td>" + email + "</td> <td>Pending</td></tr>";
+					$("table tbody").append(markup);
 				} else {
 					OC.msg.finishedSaving('#refer-error-msg',
 						{
