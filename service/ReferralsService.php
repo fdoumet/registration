@@ -3,6 +3,9 @@ namespace OCA\Registration\Service;
 
 use Exception;
 
+require_once __DIR__ . '/../db/Referral.php';
+require_once __DIR__ . '/../db/ReferralMapper.php';
+
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\AppFramework\Db\MultipleObjectsReturnedException;
 
