@@ -2,6 +2,8 @@
 
 namespace OCA\Registration\Settings;
 
+require_once __DIR__ . '/../../service/ReferralsService.php';
+
 use OCA\Registration\Service\ReferralsService;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IUserSession;
