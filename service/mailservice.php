@@ -127,7 +127,8 @@ class MailService {
 			'sitename' => $this->defaults->getName(),
 			'referrer' => $referringUser->getDisplayName(),
 			'referrer_email' => $referringUser->getEMailAddress(),
-			'logo' => $this->urlGenerator->getAbsoluteURL($this->themingDefaults->getLogo(false))
+			'logo' => $this->urlGenerator->getAbsoluteURL($this->themingDefaults->getLogo(false)),
+			'color' => $this->themingDefaults->getColorPrimary()
 		];
 
 		$html_template = new TemplateResponse('registration', 'email.referral_html', $template_var, 'blank');
