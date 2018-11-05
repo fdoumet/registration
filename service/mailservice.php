@@ -25,6 +25,7 @@
 
 namespace OCA\Registration\Service;
 
+use OCA\Registration\Db\Referral;
 use OCA\Registration\Db\Registration;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\Defaults;
@@ -33,11 +34,14 @@ use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IURLGenerator;
+use OCP\IUserManager;
 use OCP\Mail\IMailer;
 use OCP\Util;
 
 class MailService {
 
+	/** @var Defaults */
+	protected $themingDefaults;
 	/** @var IURLGenerator */
 	private $urlGenerator;
 	/** @var IMailer */
@@ -52,14 +56,18 @@ class MailService {
 	private $groupManager;
 	/** @var ILogger */
 	private $logger;
+	/** @var IUserManager */
+	private $userManager;
 
-	public function __construct(IURLGenerator $urlGenerator, IMailer $mailer, Defaults $defaults, IL10N $l10n, IConfig $config, IGroupManager $groupManager, ILogger $logger) {
+	public function __construct(Defaults $themingDefaults, IURLGenerator $urlGenerator, IMailer $mailer, Defaults $defaults, IL10N $l10n, IConfig $config, IGroupManager $groupManager, ILogger $logger, IUserManager $userManager) {
+		$this->themingDefaults = $themingDefaults;
 		$this->urlGenerator = $urlGenerator;
 		$this->mailer = $mailer;
 		$this->defaults = $defaults;
 		$this->l10n = $l10n;
 		$this->config = $config;
 		$this->groupManager = $groupManager;
+		$this->userManager = $userManager;
 		$this->logger = $logger;
 	}
 
@@ -95,6 +103,44 @@ class MailService {
 		$message = $this->mailer->createMessage();
 		$message->setFrom([$from => $this->defaults->getName()]);
 		$message->setTo([$registration->getEmail()]);
+		$message->setSubject($subject);
+		$message->setPlainBody($plaintext_part);
+		$message->setHtmlBody($html_part);
+		$failed_recipients = $this->mailer->send($message);
+		if ( !empty($failed_recipients) ) {
+			throw new RegistrationException($this->l10n->t('A problem occurred sending email, please contact your administrator.'));
+		}
+	}
+
+	/**
+	 * @param Registration $registration
+	 * @return bool
+	 * @throws RegistrationException
+	 */
+	public function sendReferralByMail(Referral $referral) {
+		$link = $this->urlGenerator->linkToRoute('registration.referrals.followReferral', array('hash' => $referral->getHash()));
+		$link = $this->urlGenerator->getAbsoluteURL($link);
+
+		$referringUser = $this->userManager->get($referral->getReferrer());
+		$template_var = [
+			'link' => $link,
+			'sitename' => $this->defaults->getName(),
+			'referrer' => $referringUser->getDisplayName(),
+			'referrer_email' => $referringUser->getEMailAddress(),
+			'logo' => $this->urlGenerator->getAbsoluteURL($this->themingDefaults->getLogo(false)),
+			'color' => $this->themingDefaults->getColorPrimary()
+		];
+
+		$html_template = new TemplateResponse('registration', 'email.referral_html', $template_var, 'blank');
+		$html_part = $html_template->render();
+		$plaintext_template = new TemplateResponse('registration', 'email.referral_plaintext', $template_var, 'blank');
+		$plaintext_part = $plaintext_template->render();
+		$subject = $this->l10n->t('%s invited you to check out %s', [$referringUser->getDisplayName(), $this->defaults->getName()]);
+
+		$from = Util::getDefaultEmailAddress('register');
+		$message = $this->mailer->createMessage();
+		$message->setFrom([$from => $this->defaults->getName()]);
+		$message->setTo([$referral->getReferreeEmail()]);
 		$message->setSubject($subject);
 		$message->setPlainBody($plaintext_part);
 		$message->setHtmlBody($html_part);

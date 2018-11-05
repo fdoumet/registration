@@ -183,7 +183,7 @@ class RegistrationService {
 	 */
 	public function validateDisplayname($displayname) {
 		if($displayname === "") {
-			throw new RegistrationException($this->l10n->t('Please provide a valid display name.'));
+			throw new RegistrationException($this->l10n->t('Please provide a valid full name.'));
 		}
 	}
 
@@ -411,16 +411,19 @@ class RegistrationService {
 	 * @param $username
 	 * @param $password
 	 * @param $decrypt
+	 * @param $referral
 	 * @return RedirectResponse|TemplateResponse
 	 */
-	public function loginUser($userId, $username, $password, $decrypt = false) {
+	public function loginUser($userId, $username, $password, $decrypt = false, $referral = '') {
 		if ($decrypt) {
 			$password = $this->crypto->decrypt($password);
 		}
 		if ( method_exists($this->usersession, 'createSessionToken') ) {
 			$this->usersession->login($username, $password);
 			$this->usersession->createSessionToken($this->request, $userId, $username, $password);
-			return new RedirectResponse($this->urlGenerator->linkTo('', 'index.php'));
+			$location = \OC::$server->getURLGenerator()->linkToRoute('stripepayments.page.index', ['referral' => $referral]);
+			return new RedirectResponse($location);
+			
 		} elseif (\OC_User::login($username, $password)) {
 			$this->cleanupLoginTokens($userId);
 			// FIXME unsetMagicInCookie will fail from session already closed, so now we always remember
@@ -434,7 +437,6 @@ class RegistrationService {
 			['msg' => $this->l10n->t('Your account has been successfully created, you can <a href="%s">log in now</a>.'), [$this->urlGenerator->getAbsoluteURL('/')]]
 			, 'guest'
 		);
-
 	}
 
 	/**
