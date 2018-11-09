@@ -19,6 +19,9 @@ use OCP\ILogger;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
+use OCA\Piwik\Controller\PixelDriveTracker;
+
+require_once __DIR__ . "/../../piwik/lib/Controller/PixelDriveTracker.php";
 
 class ReferralsController extends Controller {
 	/** @var IL10N */
@@ -37,6 +40,7 @@ class ReferralsController extends Controller {
 	private $userManager;
 	/** @var ILogger */
 	private $logger;
+	private $tracker;
 
 
 	public function __construct(
@@ -60,6 +64,7 @@ class ReferralsController extends Controller {
 		$this->userManager = $userManager;
 		$this->logger = $logger;
 		$this->registrationService = $registrationService;
+		$this->tracker = new PixelDriveTracker();
 	}
 
 	/**
@@ -78,6 +83,9 @@ class ReferralsController extends Controller {
 			$this->logger->error($error);
 			return new DataResponse(['status' => 'failure', 'data' => ['message' => $error]], Http::STATUS_OK);
 		}
+
+		// Track Event
+		$this->trackEvent($this->userId, "Created");
 
 		// Insert this referral in the database
 		$referral = $this->referralsService->insert($this->userId, $email, 0);
@@ -123,8 +131,14 @@ class ReferralsController extends Controller {
 		$userExists = $this->doesUserExist($referral->getReferreeEmail()) || $referral->getStatus() == Referral::REFERRAL_COMPLETE;
 
 		// If user already exists (likely because this referral link has already been acted upon), notify the user with a message
-		if ($userExists)
+		if ($userExists) {
+			// Track Event
+			$this->trackEvent($this->userId, "Error", "Already exists");
 			return new TemplateResponse('registration', 'message', array('msg' => "User already exists, or referral link has already been used"), 'guest');
+		}
+
+		// Track Event
+		$this->trackEvent($this->userId, "Followed");
 
 		try {
 			/** @var Referral $referral */
@@ -182,7 +196,6 @@ class ReferralsController extends Controller {
 		}
 	}
 
-
 	private function renderError($error, $hint="") {
 		return new TemplateResponse('', 'error', array(
 			'errors' => array(array(
@@ -190,5 +203,42 @@ class ReferralsController extends Controller {
 				'hint' => $hint
 			))
 		), 'error');
+	}
+
+	private function trackEvent($userId, $action, $value = ''){
+
+		$category = "Referrals";
+
+		// Post to Matomo
+		try {
+			$this->tracker->setUserId($userId);
+		} catch (\Exception $e) {
+			\OC::$server->getLogger()->error($e->getMessage());
+		}
+		$this->tracker->doTrackEvent($category, $action, $value);
+
+		// And to Google Analytics
+		$url = 'http://www.google-analytics.com/collect';
+		$postdata = http_build_query(
+			array(
+				'v' => 1, // Version
+				'tid' => 'UA-126151078-1', // Tracking ID / Property ID.
+				't' => 'event', // hit type
+				'ec' => $category, // category
+				'ea' => $action, // action
+				'el' => $value, // label
+				'uid' => $userId
+			)
+		);
+		$opts = array('http' =>
+			array(
+				'method'  => 'POST',
+				'header'  => 'Content-type: application/x-www-form-urlencoded',
+				'content' => $postdata
+			)
+		);
+
+		$context = stream_context_create($opts);
+		$result = file_get_contents($url, false, $context);
 	}
 }
