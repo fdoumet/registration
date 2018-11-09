@@ -18,7 +18,8 @@
 
 <div id="security-password" class="section">
 	<h2 class="inlineblock"><b><?php p($l->t('Get up to 10GB of free PixelDrive space!'));?></b></h2>
-	<h3 class="inlineblock"><?php p($l->t('Invite your friends to join PixelDrive. For each new sign up, we’ll give you both 500 MB of bonus space. If you need even more space, '));?><u><a href="/index.php/settings/user/payments"><?php p($l->t('upgrade your account.'))?></a></u></h3>
+	<h3 class="inlineblock"><?php p($l->t('Invite your friends to join PixelDrive. For each new sign up, we’ll give you both 500 MB of bonus space.'))?><br>
+		<?php p($l->t('If you need even more space, '));?><u><a href="/index.php/settings/user/payments"><?php p($l->t('upgrade your account.'))?></a></u></h3>
 	<span id="refer-error-msg" class="msg success hidden">Sent</span>
 	<div class="personal-settings-setting-box">
 		<form id="passwordform">
