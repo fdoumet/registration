@@ -1,6 +1,7 @@
 <?php
 \OCP\Util::addStyle('registration', 'style');
 \OCP\Util::addScript('registration', 'form');
+\OCP\Util::addScript('registration', 'track');
 if ( \OCP\Util::getVersion()[0] >= 12 )
 	\OCP\Util::addStyle('core', 'guest');
 ?><form action="<?php print_unescaped(\OC::$server->getURLGenerator()->getBaseUrl() . $_SERVER['REQUEST_URI']) ?>" method="post">
