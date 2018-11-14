@@ -12,6 +12,16 @@ $(document).ready(function() {
 		return false;
 	}
 
+	function gtag(){
+		dataLayer.push(arguments);
+	}
+
+	$.getScript("https://www.googletagmanager.com/gtag/js?id=AW-780087164");
+	window.dataLayer = window.dataLayer || [];
+
+	gtag('js', new Date());
+	gtag('config', 'AW-780087164');
+
 	$("#submit").click(function () {
 		gtag_report_conversion();
 	});
