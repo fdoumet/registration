@@ -93,7 +93,7 @@ class ReferralsController extends Controller {
 		// Make sure email is not a temporary email
 		$isTempEmail = $this->isTempEmail($email);
 		if($isTempEmail){
-			$error = 'Invalid email';
+			$error = 'Referral not sent. Invalid email';
 			$this->logger->error($error);
 			return new DataResponse(['status' => 'failure', 'data' => ['message' => $error]], Http::STATUS_OK);
 		}
