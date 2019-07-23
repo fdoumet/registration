@@ -27,6 +27,8 @@
 
 namespace OCA\Registration\Service;
 
+require __DIR__ . '/../vendor/autoload.php';
+
 use OC\Authentication\Exceptions\InvalidTokenException;
 use OC\Authentication\Exceptions\PasswordlessTokenException;
 use OC\Authentication\Token\IProvider;
@@ -49,6 +51,7 @@ use \OCP\IGroupManager;
 use \OCP\IL10N;
 use \OCP\IConfig;
 use \OCP\Security\ISecureRandom;
+use EmailChecker\EmailChecker;
 
 class RegistrationService {
 
@@ -84,6 +87,8 @@ class RegistrationService {
 	private $tokenProvider;
 	/** @var ICrypto */
 	private $crypto;
+	/** @var EmailChecker */
+	private $emailChecker;
 
 	public function __construct($appName, MailService $mailService, IL10N $l10n, IURLGenerator $urlGenerator,
 								RegistrationMapper $registrationMapper, IUserManager $userManager, IConfig $config, IGroupManager $groupManager, Defaults $defaults,
@@ -104,6 +109,7 @@ class RegistrationService {
 		$this->session = $session;
 		$this->tokenProvider = $tokenProvider;
 		$this->crypto = $crypto;
+		$this->emailChecker = new EmailChecker();
 	}
 
 	/**
@@ -174,6 +180,10 @@ class RegistrationService {
 				)
 			);
 		}
+
+		if (!$this->emailChecker->isValid($email))
+			throw new RegistrationException($this->l10n->t('Invalid email'));
+
 		return true;
 	}
 

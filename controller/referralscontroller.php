@@ -20,8 +20,10 @@ use OCP\IRequest;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCA\Piwik\Controller\PixelDriveTracker;
+use EmailChecker\EmailChecker;
 
 require_once __DIR__ . "/../../piwik/lib/Controller/PixelDriveTracker.php";
+require __DIR__ . '/../vendor/autoload.php';
 
 class ReferralsController extends Controller {
 	/** @var IL10N */
@@ -40,7 +42,10 @@ class ReferralsController extends Controller {
 	private $userManager;
 	/** @var ILogger */
 	private $logger;
+	/** @var PixelDriveTracker */
 	private $tracker;
+	/** @var EmailChecker */
+	private $emailChecker;
 
 
 	public function __construct(
@@ -65,6 +70,7 @@ class ReferralsController extends Controller {
 		$this->logger = $logger;
 		$this->registrationService = $registrationService;
 		$this->tracker = new PixelDriveTracker();
+		$this->emailChecker = new EmailChecker();
 	}
 
 	/**
@@ -80,6 +86,14 @@ class ReferralsController extends Controller {
 		// Make sure we don't duplicated referrals
 		if (!$validReferral){
 			$error = 'Referral not sent. Referral already exists';
+			$this->logger->error($error);
+			return new DataResponse(['status' => 'failure', 'data' => ['message' => $error]], Http::STATUS_OK);
+		}
+
+		// Make sure email is not a temporary email
+		$isTempEmail = $this->isTempEmail($email);
+		if($isTempEmail){
+			$error = 'Invalid email';
 			$this->logger->error($error);
 			return new DataResponse(['status' => 'failure', 'data' => ['message' => $error]], Http::STATUS_OK);
 		}
@@ -117,6 +131,10 @@ class ReferralsController extends Controller {
 			return false;
 
 		return true;
+	}
+
+	private function isTempEmail($email){
+		return !$this->emailChecker->isValid($email);
 	}
 
 	/**
