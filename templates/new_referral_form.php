@@ -17,12 +17,14 @@
 </style>
 
 <div id="security-password" class="section">
-	<h2 class="inlineblock"><b><?php p($l->t('Get up to 10GB of free PixelDrive space!'));?></b></h2><br>
+	<h2 class="inlineblock"><b><?php p($l->t('Get up to 100 monthly image compressions and 10GB of storage space for free!'));?></b></h2><br>
 	<h3 class="inlineblock"><?php p($l->t('Invite your friends to join Compression.ai. For'));?><b><?php p($l->t(' each '));?></b><?php p($l->t('new sign up, we’ll give you both: '));?>
-	<ul>
-		<li>&#8226;<?php p($l->t(' 5 additional image compressions per month'));?></li>
-		<li>&#8226;<?php p($l->t(' 500 MB of bonus storagespace'));?></li>
-	</ul>
+		<br>
+		<br>
+		<ul>
+			<li>&#8226;<?php p($l->t(' 5 additional image compressions per month'));?></li>
+			<li>&#8226;<?php p($l->t(' 500 MB of bonus storage space'));?></li>
+		</ul>
 	<br>
 		<?php p($l->t('If you need even more compression quota or space, '));?><u><a href="/index.php/settings/user/payments"><?php p($l->t('upgrade your account.'))?></a></u></h3>
 	<span id="refer-error-msg" class="msg success hidden">Sent</span>
