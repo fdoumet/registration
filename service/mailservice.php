@@ -193,8 +193,11 @@ class MailService {
 	 * @throws \Exception
 	 */
 	private function sendNewUserNotifEmail(array $to, $username, $userIsEnabled) {
-		$link = $this->urlGenerator->linkToRoute('settings_users');
-		$link = $this->urlGenerator->getAbsoluteURL($link);
+		if ( $this->config->getAppValue('core', 'vendor', '') === 'nextcloud' ) {
+			$link = $this->urlGenerator->linkToRouteAbsolute('settings.Users.usersList');
+		} else {
+			$link = $this->urlGenerator->linkToRouteAbsolute('user_management.users');
+		}
 		$template_var = [
 			'user' => $username,
 			'sitename' => $this->defaults->getName(),
@@ -219,7 +222,8 @@ class MailService {
 		$from = Util::getDefaultEmailAddress('register');
 		$message = $this->mailer->createMessage();
 		$message->setFrom([$from => $this->defaults->getName()]);
-		$message->setTo($to);
+		$message->setTo([]);
+		$message->setBcc($to);
 		$message->setSubject($subject);
 		$message->setPlainBody($plaintext_part);
 		$message->setHtmlBody($html_part);
