@@ -22,8 +22,8 @@
 		<br>
 		<br>
 		<ul>
-			<li>&#8226;<?php p($l->t(' 5 additional image compressions per month'));?></li>
-			<li>&#8226;<?php p($l->t(' 500 MB of bonus storage space'));?></li>
+			<li>&#8226;<?php p($l->t(' 5 additional image compressions per month, up to 100 compressions/month'));?></li>
+			<li>&#8226;<?php p($l->t(' 500 MB of bonus storage space, up to 10 GB'));?></li>
 		</ul>
 	<br>
 		<?php p($l->t('If you need even more compression quota or space, '));?><u><a href="/index.php/settings/user/payments"><?php p($l->t('upgrade your account.'))?></a></u></h3>
