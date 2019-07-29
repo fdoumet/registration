@@ -8,19 +8,25 @@ use OCA\Registration\Service\ReferralsService;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IUserSession;
 use OCP\Settings\ISettings;
+use OCP\Defaults;
 
 class Personal implements ISettings {
 
 	/** @var IUserSession */
 	private $userSession;
+	/** @var ReferralsService */
 	private $referralsService;
+	/** @var Defaults */
+	private $defaults;
 
 	public function __construct(
 		IUserSession $userSession,
-		ReferralsService $referralsService
+		ReferralsService $referralsService,
+		Defaults $defaults
 	) {
 		$this->userSession = $userSession;
 		$this->referralsService = $referralsService;
+		$this->defaults = $defaults;
 	}
 
 	/**
@@ -32,6 +38,7 @@ class Personal implements ISettings {
 
 		$parameters = [
 			'referrals'    => $userReferrals,
+			'sitename'		=> $this->defaults->getName()
 		];
 
 		return new TemplateResponse('registration', 'new_referral_form', $parameters);  // templates/index.php

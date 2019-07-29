@@ -21,6 +21,7 @@ use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCA\Piwik\Controller\PixelDriveTracker;
 use EmailChecker\EmailChecker;
+use OCP\Defaults;
 
 require_once __DIR__ . "/../../piwik/lib/Controller/PixelDriveTracker.php";
 require __DIR__ . '/../vendor/autoload.php';
@@ -46,6 +47,8 @@ class ReferralsController extends Controller {
 	private $tracker;
 	/** @var EmailChecker */
 	private $emailChecker;
+	/** @var Defaults */
+	private $defaults;
 
 
 	public function __construct(
@@ -58,7 +61,8 @@ class ReferralsController extends Controller {
 		MailService $mailService,
 		IUserManager $userManager,
 		ILogger $logger,
-		$UserId
+		$UserId,
+		Defaults $defaults
 	){
 		parent::__construct($appName, $request);
 		$this->l10n = $l10n;
@@ -71,6 +75,7 @@ class ReferralsController extends Controller {
 		$this->registrationService = $registrationService;
 		$this->tracker = new PixelDriveTracker();
 		$this->emailChecker = new EmailChecker();
+		$this->defaults = $defaults;
 	}
 
 	/**
@@ -99,7 +104,7 @@ class ReferralsController extends Controller {
 		}
 
 		// Track Event
-		$this->trackEvent($this->userId, "Created");
+		//$this->trackEvent($this->userId, "Created");
 
 		// Insert this referral in the database
 		$referral = $this->referralsService->insert($this->userId, $email, 0);
@@ -151,12 +156,12 @@ class ReferralsController extends Controller {
 		// If user already exists (likely because this referral link has already been acted upon), notify the user with a message
 		if ($userExists) {
 			// Track Event
-			$this->trackEvent($this->userId, "Error", "Already exists");
+			//$this->trackEvent($this->userId, "Error", "Already exists");
 			return new TemplateResponse('registration', 'message', array('msg' => "User already exists, or referral link has already been used"), 'guest');
 		}
 
 		// Track Event
-		$this->trackEvent($this->userId, "Followed");
+		//$this->trackEvent($this->userId, "Followed");
 
 		try {
 			/** @var Referral $referral */
@@ -209,7 +214,7 @@ class ReferralsController extends Controller {
 			return new TemplateResponse(
 				'registration',
 				'message',
-				array('msg' => "You're awesome! Welcome to your PixelDrive account.\r\n\r\nDue to demand, and to keep our service great, we're slowly rolling out new registrations. We'll approve your account within 24 hours and send you an email.\r\n\r\nAs an early adopter, you're gonna see something pretty cool in our platform.\r\n\r\nHold tight!"),
+				array('msg' => "You're awesome! Welcome to your " . $this->defaults->getName() . " account.\r\n\r\nDue to demand, and to keep our service great, we're slowly rolling out new registrations. We'll approve your account within 24 hours and send you an email.\r\n\r\nAs an early adopter, you're gonna see something pretty cool in our platform.\r\n\r\nHold tight!"),
 				'guest');
 		}
 	}

@@ -23,6 +23,7 @@ use \OCP\AppFramework\Http\RedirectResponse;
 use \OCP\AppFramework\Controller;
 use OCP\IURLGenerator;
 use \OCP\IL10N;
+use OCP\Defaults;
 
 class RegisterController extends Controller {
 
@@ -34,6 +35,8 @@ class RegisterController extends Controller {
 	private $registrationService;
 	/** @var MailService */
 	private $mailService;
+	/** @var Defaults */
+	private $defaults;
 
 
 	public function __construct(
@@ -42,13 +45,15 @@ class RegisterController extends Controller {
 		IL10N $l10n,
 		IURLGenerator $urlgenerator,
 		RegistrationService $registrationService,
-		MailService $mailService
+		MailService $mailService,
+		Defaults $defaults
 	){
 		parent::__construct($appName, $request);
 		$this->l10n = $l10n;
 		$this->urlgenerator = $urlgenerator;
 		$this->registrationService = $registrationService;
 		$this->mailService = $mailService;
+		$this->defaults = $defaults;
 	}
 
 	/**
@@ -153,7 +158,7 @@ class RegisterController extends Controller {
 			return new TemplateResponse(
 				'registration',
 				'message',
-				array('msg' => "You're awesome! Welcome to your PixelDrive account.\r\n\r\nDue to demand, and to keep our service great, we're slowly rolling out new registrations. We'll approve your account within 24 hours and send you an email.\r\n\r\nAs an early adopter, you're gonna see something pretty cool in our platform.\r\n\r\nHold tight!"),
+				array('msg' => "You're awesome! Welcome to your " . $this->defaults->getName() . " account.\r\n\r\nDue to demand, and to keep our service great, we're slowly rolling out new registrations. We'll approve your account within 24 hours and send you an email.\r\n\r\nAs an early adopter, you're gonna see something pretty cool in our platform.\r\n\r\nHold tight!"),
 				'guest');
 		}
 
@@ -180,7 +185,7 @@ class RegisterController extends Controller {
 			return new TemplateResponse(
 				'registration',
 				'message',
-				array('msg' => "You're awesome! Welcome to your PixelDrive account.\r\n\r\nDue to demand, and to keep our service great, we're slowly rolling out new registrations. We'll approve your account within 24 hours and send you an email.\r\n\r\nAs an early adopter, you're gonna see something pretty cool in our platform.\r\n\r\nHold tight!"),
+				array('msg' => "You're awesome! Welcome to your " . $this->defaults->getName() . " account.\r\n\r\nDue to demand, and to keep our service great, we're slowly rolling out new registrations. We'll approve your account within 24 hours and send you an email.\r\n\r\nAs an early adopter, you're gonna see something pretty cool in our platform.\r\n\r\nHold tight!"),
 				'guest');
 		}
 	}

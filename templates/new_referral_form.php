@@ -18,7 +18,7 @@
 
 <div id="security-password" class="section">
 	<h2 class="inlineblock"><b><?php p($l->t('Get up to 100 monthly image compressions and 10GB of storage space for free!'));?></b></h2><br>
-	<h3 class="inlineblock"><?php p($l->t('Invite your friends to join Compression.ai. For'));?><b><?php p($l->t(' each '));?></b><?php p($l->t('new sign up, we’ll give you both: '));?>
+	<h3 class="inlineblock"><?php p($l->t('Invite your friends to join ' . $_['sitename'] . '. For'));?><b><?php p($l->t(' each '));?></b><?php p($l->t('new sign up, we’ll give you both: '));?>
 		<br>
 		<br>
 		<ul>
