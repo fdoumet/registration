@@ -127,6 +127,11 @@ class ReferralsController extends Controller {
 	}
 
 	private function isValidReferral($email){
+		// Disallow email extensions such as `fdoumet+pd@gmail.com`
+		$pattern = "/.+(\+.+)@.+\.com/";
+		if (preg_match($pattern, $email, $matches))
+			$email = str_replace($matches[1], '', $email);
+		
 		// Check if user already exists
 		if ($this->doesUserExist($email))
 			return false;

@@ -158,6 +158,11 @@ class RegistrationService {
 	 */
 	public function validateEmail($email) {
 
+		// Disallow email extensions such as `fdoumet+pd@gmail.com`
+		$pattern = "/.+(\+.+)@.+\.com/";
+		if (preg_match($pattern, $email, $matches))
+			$email = str_replace($matches[1], '', $email);
+
 		$this->mailService->validateEmail($email);
 
 		// check for pending registrations
